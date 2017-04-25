@@ -1,26 +1,33 @@
 # rankpruning
 
-**rankpruning** is a state-of-the-art (2017) python package for binary classification with **significantly mislabeled training examples.**  This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification with noisy positive and negative sets). The RankPruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the paper is available on arXiv at this link: (coming soon in the next 5 days!).
+**rankpruning** is a state-of-the-art (2017) python package for binary classification with **significantly mislabeled training examples.**  This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification with noisy positive and negative sets). The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the paper is available on arXiv at this link: (coming soon in the next 5 days!).
 
-RankPruning:
+The `RankPruning()` class:
 - works with any probabilistic classifer (e.g. neural network, logistic regression)
 - is fast (time-efficient), taking about 2-3 times the training time of the classifier)
-- computes the fraction of noise in the positive and negative sets
-- provides state-of-the-art F1 score, AUC-PR, accuracy, and more for binary classification with mislabeled training data (P̃Ñ learning).
+- also computes the fraction of noise in the positive and negative sets
+- provides state-of-the-art (as of 2017) F1 score, AUC-PR, accuracy, etc. for binary classification with mislabeled training data (P̃Ñ learning).
 
-The RankPruning algorithm is theoretically grounded and trivial to use. It is trained with 
+The Rank Pruning algorithm is theoretically grounded and trivial to use. It is trained with 
 1. a feature matrix **X**
-2. a vector **s** of binary (0 or 1) labels such that some unknown fraction of the labels have been mislabeled (flipped)
-3. ANY probabilistic classifier **clf** as long as it has .predict_proba(), .predict(), and .fit() defined. 
+2. a vector **s** of binary (0 or 1) labels where an unknown fraction of labels may be mislabeled (flipped)
+3. ANY probabilistic classifier **clf** as long as it has `clf.predict_proba()`, `clf.predict()`, and `clf.fit()` defined. 
 
-What does Rank Pruning do? Ideally, given training feature matrix **X** and noisy labels **s** (instead of the hidden, true labels **y**), fit **clf** as if you had called `clf.fit(X, y)` not `clf.fit(X, s)`, even though y is not available!
+**What does Rank Pruning do?** Ideally, given training feature matrix **X** and noisy labels **s** (instead of the hidden, true labels **y**), fit **clf** as if you had called `clf.fit(X, y)` not `clf.fit(X, s)`, even though **y** is not available.
 
-**rankpruning** is based on a joint research effort between the Massachusetts Institute of Technology's Department of Electrical Engineering and Computer Science, Office of Digital Learning, and Department of Physics. **rankpruning** uses the "learning with confident examples" paradigm to:
+**rankpruning** is based on a joint research effort between the Massachusetts Institute of Technology's Department of Electrical Engineering and Computer Science, Office of Digital Learning, and Department of Physics. **rankpruning** embodies the "learning with confident examples" paradigm and works as follows:
 1. estimate the fraction of mislabeling in both the positive and negative sets
 2. use these estimates to rank examples by confidence of being correctly labeled
 3. prune out likely mislabeled data
 4. train on the pruned set (an intended subset of the correctly labeled training data)   
 
+### Classification with Rank Pruning is easy
+
+```python
+rp = RankPruning()
+rp.fit(X, s, clf)
+pred = rp.predict(X)
+``` 
 
 ### Installation
 
@@ -34,12 +41,12 @@ $ conda install scikit-learn
 
 For pip users:
 
-``
+```
 $ pip install numpy
 $ pip install -U scikit-learn
 ```
 
-Since RankPruning works for any probabilistic classifer, we provided a CNN (convolutional neural network). Using this classifier requires two additional dependencies. 
+Since Rank Pruning works for any probabilistic classifer, we provided a CNN (convolutional neural network). Using this classifier requires two additional dependencies. 
 
 With conda:
 
@@ -49,9 +56,9 @@ $ conda install -c conda-forge tensorflow
 $ conda install keras
 ```
 
-With pip, first follow the instructions for installing tensorflow here: https://www.tensorflow.org/versions/r0.10/get_started/os_setup#pip_installation, then install keras using: 
+With pip, first follow the instructions for installing tensorflow [here](https://www.tensorflow.org/versions/r0.10/get_started/os_setup#pip_installation), then install keras using: 
 
-``
+```
 sudo pip install keras
 ```
 
@@ -85,13 +92,7 @@ from rankpruning import RankPruning
 ```
 
 
-### How to classify
 
-```python
-rp = RankPruning()
-rp.fit(X, s, clf)
-pred = rp.predict(X)
-``` 
 
 <!-- ### Example: Comparing Rank Pruning with other models for P̃Ñ learning. -->
 
