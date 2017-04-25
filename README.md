@@ -25,8 +25,8 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 ### Classification with Rank Pruning is easy
 
 ```python
-rp = RankPruning()
-rp.fit(X, s, clf)
+rp = RankPruning(clf=logreg()) # or an RNN(), or CNN(), or NaiveBayes(), etc.
+rp.fit(X, s)
 pred = rp.predict(X)
 ``` 
 
