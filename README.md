@@ -1,6 +1,6 @@
 # rankpruning
 
-**rankpruning** is a state-of-the-art (2017) python package for binary classification with **significantly mislabeled training examples.**  This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification with noisy positive and negative sets). The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the paper is available on arXiv at this link: (coming soon in the next 5 days!).
+**rankpruning** is a python package for state-of-the-art binary classification with **significantly mislabeled training examples.**  This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification with noisy positive and negative sets). The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the paper is available on arXiv at this link: (coming soon in the next 5 days!).
 
 The `RankPruning()` class:
 - works with any probabilistic classifer (e.g. neural network, logistic regression)
