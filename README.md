@@ -95,57 +95,68 @@ from rankpruning import RankPruning
 
 
 
-<!-- ### Example: Comparing Rank Pruning with other models for P̃Ñ learning. -->
+### Simple Example: Comparing Rank Pruning with other models for P̃Ñ learning.
 
-<!-- ```python
+```python
 from __future__ import print_function
-
+import rankpruning
+import pnlearning_methods
 import numpy as np
+
+# Libraries uses only for the purpose of this example
 from scipy.stats import multivariate_normal
-from sklearn.cross_validation import train_test_split
 from sklearn.metrics import precision_recall_fscore_support as prfs
-from sklearn.metrics import auc
 from sklearn.metrics import accuracy_score as acc
+from sklearn.linear_model import LogisticRegression
 
-from pulearning.iterprune import IterativePruning
-from pulearning.iterprune import ElkanPU
-from pulearning.iterprune import BaselinePU
-
-# Generate 4000 negative examples and 1000 positive examples
-neg = multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=4000)
-pos = multivariate_normal.rvs(mean=[8,8], cov=[[1.5,1.3],[1.3,4]], size=1000)
-
-# Combine to form X and y
+# Create the training dataset with positive and negative examples
+# drawn from two-dimensional Guassian distributions.
+neg = multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=1000)
+pos = multivariate_normal.rvs(mean=[8,8], cov=[[1.5,1.3],[1.3,4]], size=500)
 X = np.concatenate((neg, pos))
 y = np.concatenate((np.zeros(len(neg)), np.ones(len(pos))))
 
-# In PU learning, only some (in our example 20%) of positive labels are known.
-# All other labels, including all negative example labels, are uknown.
-pos_unknown_train, pos_known_train = train_test_split(pos, test_size = 0.2)
+# For this example, choose the following mislaeling noise rates.
+frac_pos2neg = 0.55 # rh1, P(s=0|y=1) in literature
+frac_neg2pos = 0.15 # rh0, P(s=1|y=0) in literature
 
-X_train = np.concatenate((neg, pos_unknown_train, pos_known_train))
-print(len(neg), len(pos_unknown_train), len(pos_known_train))
+# Generate s, the observed noisy label vector (flipped uniformly randomly with noise rates).
+s = y * (np.cumsum(y) <= (1 - frac_pos2neg) * sum(y))
+s_only_neg_mislabeled = 1 - (1 - y) * (np.cumsum(1 - y) <= (1 - frac_neg2pos) * sum(1 - y))
+s[y==0] = s_only_neg_mislabeled[y==0]
 
-# Instead of y, we have a vector, s: labeled (1) or unlabeled (0)
-s = np.concatenate((np.zeros(len(neg) + len(pos_unknown_train)), np.ones(len(pos_known_train))))
-print(len(s), sum(s))
+# Create testing dataset:
+neg_test = multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=2000)
+pos_test = multivariate_normal.rvs(mean=[8,8], cov=[[1.5,1.3],[1.3,4]], size=1000)
+X_test = np.concatenate((neg_test, pos_test))
+y_test = np.concatenate((np.zeros(len(neg_test)), np.ones(len(pos_test))))
 
-models = {"Iterative_Pruning":IterativePruning(), "ElkanPU": ElkanPU(), "BaselinePU": BaselinePU()}
+# We choose logistic regression, but rank pruning can use 
+# any probabilistic classifier such as CNN(), or NaiveBayes(), etc.
+clf = LogisticRegression()
+
+# Initilize models: 
+models = {
+  "Baseline" : pnlearning_methods.BaselineNoisyPN(clf = clf),
+  "Rank Pruning" : rankpruning.RankPruning(clf = clf),
+  "Rank Pruning (noise rates given)": rankpruning.RankPruning(frac_pos2neg, frac_neg2pos, clf = clf),
+  "Elk08 (noise rates given)": pnlearning_methods.Elk08(e1 = 1 - frac_pos2neg, clf = clf),
+  "Liu16 (noise rates given)": pnlearning_methods.Liu16(frac_pos2neg, frac_neg2pos, clf = clf),
+  "Nat13 (noise rates given)": pnlearning_methods.Nat13(frac_pos2neg, frac_neg2pos, clf = clf),
+}
+
+# For the models, fit on (X, s) and predict on X_test:
 for key in models.keys():
   model = models[key]
-  print("\n\nFitting %s classifier. Default classifier is logistic regression." % key)
-  if key == "Iterative_Pruning":
-    model.fit(X_train, s, cross_val=True)
-  else:
-    model.fit(X_train, s)
-  pred = model.predict(X)
-  pred_proba = model.predict_proba(X) # Produces only P(y=1)
+  model.fit(X, s)
+  pred = model.predict(X_test)
+  pred_proba = model.predict_proba(X_test) # Produces P(y=1|x)
 
-  print("\n%s Model Performance:\n=================\n" % key)
-  print("AUC:", auc(y, pred_proba))
-  print("Accuracy:", acc(y, pred))
-  print("Precision:", prfs(y, pred)[0])
-  print("Recall:", prfs(y, pred)[1])
-  print("F1 score:", prfs(y, pred)[2])
-  print("Support:", prfs(y, pred)[3])
-``` -->
+  print("\n%s Model Performance:\n==============================\n" % key)
+  print(
+    "Accuracy:", acc(y_test, pred), "|", 
+    "Precision:", prfs(y_test, pred)[0], "|", 
+    "Recall:", prfs(y_test, pred)[1], "|",
+    "F1:", prfs(y_test, pred)[2]
+  )
+```
