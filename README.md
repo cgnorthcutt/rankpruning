@@ -47,9 +47,9 @@ $ pip install numpy
 $ pip install -U scikit-learn
 ```
 
-Since Rank Pruning works for any probabilistic classifer, we provided a CNN (convolutional neural network). Using this classifier requires two additional dependencies. 
+Since Rank Pruning works for any probabilistic classifer, we provide a CNN (convolutional neural network). Using this classifier requires two additional dependencies. 
 
-With conda:
+To use our CNN with conda:
 
 ```
 # Linux/Mac OS X, Python 2.7/3.4/3.5, CPU only:
