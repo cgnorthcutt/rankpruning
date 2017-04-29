@@ -30,32 +30,16 @@ class Elk08:
       
   e1 : float
     Estimate of P(s=1|y=1) can be passed in. If None, it is estimated.
-
-  niter_e1 : int
-    The number of times to estimate e1 using Elkan's method.
-    
-  epsilon_e1 : float
-    The convergence threshold for how little the mean estimate of e1
-      can change to continue averaging in new estimates of e1.
-      
-  downsample_e1 : float
-    Uses randomly chosen subsets of X and s when estimating e1.
   '''
   
   def __init__(
     self, 
     clf = None, 
     e1 = None, 
-    niter_e1 = 10, 
-    epsilon_e1 = 0.01, 
-    downsample_e1 = 1.0,
   ):
 
     self.clf = logreg() if clf is None else clf
     self.e1 = e1
-    self.niter_e1 = niter_e1
-    self.epsilon_e1 = epsilon_e1
-    self.downsample_e1 = downsample_e1
     
     
   def fit(self, X, s, prob_s_eq_1 = None, cv_n_folds = 3):
