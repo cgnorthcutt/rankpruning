@@ -14,7 +14,8 @@ We provide both Jupyter Notebook and python implementations of most files for po
 ```python
 rp = RankPruning(clf=logreg()) # or a CNN(), or NaiveBayes(), etc.
 rp.fit(X, s)
-pred = rp.predict(X)``` 
+pred = rp.predict(X)
+``` 
 
 It is trained with:
 1. a feature matrix **X**
@@ -36,13 +37,15 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 To use the **rankpruning** package just run:
 
 ```
-$ pip install git+https://github.com/cgnorthcutt/rankpruning.git```
+$ pip install git+https://github.com/cgnorthcutt/rankpruning.git
+```
 
 If you'd like to explore the tutorial, test files, or make changes; clone the repo and run:
 
 ```
 $ cd rankpruning
-$ pip install -e .```
+$ pip install -e .
+```
 
 then in python, you can:
 
@@ -53,7 +56,8 @@ import rankpruning
 from rankpruning import RankPruning
 
 # module containing other prior art methods for pnlearning
-from rankpruning import other_pnlearning_methods```
+from rankpruning import other_pnlearning_methods
+```
 
 If you wish to use the tutorial_and_testing package, a few additional dependencies are needed. See below.
 
@@ -68,12 +72,14 @@ To use our CNN with conda:
 ```
 # Linux/Mac OS X, Python 2.7/3.4/3.5, CPU only:
 $ conda install -c conda-forge tensorflow
-$ conda install keras```
+$ conda install keras
+```
 
 With pip, first follow the instructions for installing tensorflow [here](https://www.tensorflow.org/versions/r0.10/get_started/os_setup#pip_installation), then install keras using: 
 
 ```
-$ sudo pip install keras```
+$ sudo pip install keras
+```
 
 We also provide a basic tutorial to test out Rank Pruning. The tutorial and testing examples also depend on the following four packages:
 - scipy
@@ -144,7 +150,8 @@ for key in models.keys():
     "Precision:", prfs(y_test, pred)[0], "|", 
     "Recall:", prfs(y_test, pred)[1], "|",
     "F1:", prfs(y_test, pred)[2]
-  )```
+  )
+```
 
 ### More examples
 
