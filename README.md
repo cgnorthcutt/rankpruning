@@ -1,11 +1,13 @@
 # rankpruning
 
-**rankpruning** is a python package for state-of-the-art binary classification with **partially mislabeled training examples**  This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification where some fraction of positive example labels are uniformly randomly flipped and some fraction of negative example labels are uniformly randomly flipped). Rank Pruning is theoretically grounded and trivial to use. The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the paper is available on arXiv at this link: (coming soon in the next 5 days!). The `RankPruning()` class:
+**rankpruning** is a python package for state-of-the-art binary classification with **partially mislabeled training examples**. This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification where some fraction of positive example labels are uniformly randomly flipped and some fraction of negative example labels are uniformly randomly flipped). Rank Pruning is theoretically grounded and trivial to use. The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the paper is available on arXiv at this link: (coming soon in the next 5 days!). The `RankPruning()` class:
 - works with any probabilistic classifer (e.g. neural network, logistic regression)
 - is fast (time-efficient), taking about 2-3 times the training time of the classifier)
 - also computes the fraction of noise in the positive and negative sets
 - provides state-of-the-art (as of 2017) F1 score, AUC-PR, accuracy, etc. for binary classification with mislabeled training data (P̃Ñ learning).
 - also works well when noise examples drawn from a third distribution are mixed into the training data.
+
+We provide both Jupyter Notebook and python implementations of most files for portability and ease of use. A tutorial is also provided in the tutorial/tutorial.ipynb file. 
 
 ### Classification with Rank Pruning is easy
 
@@ -31,6 +33,28 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 4. train on the pruned set (an intended subset of the correctly labeled training data)   
 
 ### Installation
+
+To use the rankpruning package, simply:
+
+```
+$ python setup.py
+```
+
+or if you intend to modify the files
+
+```
+$ python setup.py develop
+```
+
+then you can
+
+```
+import rankpruning
+from rankpruning import RankPruning
+from rankpruning import other_pnlearning_methods
+```
+
+If you wish to use the tutorial_and_testing package, a few additional dependencies are needed. See below.
 
 #### Dependencies
 
