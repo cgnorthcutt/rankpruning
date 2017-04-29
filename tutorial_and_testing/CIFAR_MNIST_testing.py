@@ -239,7 +239,7 @@ for image in image_list:
   for pi1, true_rh1 in [(0.5, 0.5), (0.25, 0.25), (0.5, 0.0), (0.0, 0.5)]:    
     for model in ordered_models_keys:
       # Parameter settings:
-      dataset = "cifar" # choose between mnist and cifar
+      dataset = "mnist" # choose between mnist and cifar
       downsample_ratio = 0.5 # What fraction of data to keep for speed increase
 
       # clf specific settings:
