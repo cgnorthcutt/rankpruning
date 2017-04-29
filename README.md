@@ -7,7 +7,7 @@
 - provides state-of-the-art (as of 2017) F1 score, AUC-PR, accuracy, etc. for binary classification with mislabeled training data (P̃Ñ learning).
 - also works well when noise examples drawn from a third distribution are mixed into the training data.
 
-A tutorial is provided in the tutorial/tutorial.ipynb file. An ipynb (Jupyter Notebook) is used to allow you to view the tutorial output without installing tutorial-specific dependiences. We provide both Jupyter Notebook and python implementations of most files for portability and ease of use.  
+A tutorial is provided in the tutorial/tutorial.ipynb file. An ipynb (Jupyter Notebook) is used to allow you to view the tutorial output without installing tutorial-specific dependiences. We provide both Jupyter Notebook and python implementations of most files for portability and ease of use.
 
 ### Classification with Rank Pruning is easy
 
