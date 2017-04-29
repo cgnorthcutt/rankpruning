@@ -34,14 +34,13 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 
 ### Installation
 
-To use the **rankpruning** package, clone the repo and run:
+To use the **rankpruning** package just run:
 
 ```
-$ cd rankpruning
-$ pip install .
+$ pip install git+https://github.com/cgnorthcutt/rankpruning.git
 ```
 
-or if you plan to change any files, clone and run in developer mode:
+If you'd like to explore the tutorial, test files, or make changes; clone the repo and run:
 
 ```
 $ cd rankpruning
@@ -50,7 +49,7 @@ $ pip install -e .
 
 then in python, you can:
 
-```
+```python
 import rankpruning
 from rankpruning import RankPruning
 from rankpruning import other_pnlearning_methods
