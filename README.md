@@ -37,13 +37,13 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 To use the **rankpruning** package, simply:
 
 ```
-$ python setup.py
+$ python setup.py install --user
 ```
 
-or if you intend to modify the files
+or if you have issues or intend to modify the files, try:
 
 ```
-$ python setup.py develop
+$ python setup.py develop --user
 ```
 
 then you can
