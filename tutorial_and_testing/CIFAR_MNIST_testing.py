@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 from __future__ import print_function
 
@@ -17,7 +17,7 @@ from rankpruning import RankPruning, other_pnlearning_methods
 from util import get_dataset, downsample, get_metrics, make_sure_path_exists
 
 
-# In[2]:
+# In[ ]:
 
 def get_model(key = None, rh1 = None, rh0 = None, clf = None):
   models = {
@@ -36,7 +36,7 @@ def get_model(key = None, rh1 = None, rh0 = None, clf = None):
   return model
 
 
-# In[4]:
+# In[ ]:
 
 def run_test(
   dataset,
@@ -202,7 +202,7 @@ def run_test(
   return data_all
 
 
-# In[5]:
+# In[ ]:
 
 try:
   image_index = int(sys.argv[1])
@@ -282,9 +282,4 @@ for image in image_list:
       # Before we store results, create folder if needed.
       make_sure_path_exists("data/")
       pickle.dump(data_all, open("data/metrics_{0}_{1}_{2}_epochs_rh1_{3}_downsample_{4}_model_{5}_image_{6}_pi1_{7}.p".format(dataset, clf_type, epochs, true_rh1, downsample_ratio, model, image, pi1),"wb")) 
-
-
-# In[ ]:
-
-
 
