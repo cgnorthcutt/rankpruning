@@ -1,3 +1,9 @@
+# Repo-specific entries
+tutorial_and_testing/data/*
+tutorial_and_testing/cifar-10-batches-py/*
+tutorial_and_testing/failed_models/*
+tutorial_and_testing/cifar-10-python.tar.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
