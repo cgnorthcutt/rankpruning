@@ -8,13 +8,10 @@ from __future__ import print_function
 
 # In[ ]:
 
-get_ipython().magic(u'matplotlib inline')
-
 from rankpruning import RankPruning, other_pnlearning_methods
 import numpy as np
 
 # Libraries uses only for the purpose of the tutorial
-from matplotlib import pyplot as plt
 from scipy.stats import multivariate_normal
 from sklearn.metrics import precision_recall_fscore_support as prfs
 from sklearn.metrics import accuracy_score as acc
@@ -32,10 +29,15 @@ neg['label'] = [0 for i in range(len(neg))]
 pos = pd.DataFrame(multivariate_normal.rvs(mean=[5,5], cov=[[1.5,0.3],[1.3,4]], size=500), columns = ['x1', 'x2'])
 pos['label'] = [1 for i in range(len(pos))]
 
-# Plot the distribution for your viewing.
-plt.figure(figsize=(7, 7))
-plt.scatter(pos['x1'], pos['x2'], c='blue', s=50, marker="+", linewidth=1)
-plt.scatter(neg['x1'], neg['x2'], s=50, facecolors='none', edgecolors='red', linewidth=1)
+try:
+  # Plot the distribution for your viewing.
+  get_ipython().magic(u'matplotlib inline')
+  from matplotlib import pyplot as plt
+  plt.figure(figsize=(7, 7))
+  plt.scatter(pos['x1'], pos['x2'], c='blue', s=50, marker="+", linewidth=1)
+  plt.scatter(neg['x1'], neg['x2'], s=50, facecolors='none', edgecolors='red', linewidth=1)
+except:
+  print("Plotting is only supported in an iPython interface.")
 
 
 # ## Let's look at seemingly impossible example where 80% of hidden, true positive labels have been flipped to negative! Also, let 15% of negative labels be flipped to positive!
