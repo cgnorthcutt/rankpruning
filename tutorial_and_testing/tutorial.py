@@ -1,10 +1,14 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[1]:
+
+from __future__ import print_function
+
+
+# In[ ]:
 
 get_ipython().magic(u'matplotlib inline')
-from __future__ import print_function
 
 from rankpruning import RankPruning, other_pnlearning_methods
 import numpy as np
