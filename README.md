@@ -58,18 +58,7 @@ If you wish to use the tutorial_and_testing package, a few additional dependenci
 
 #### Dependencies
 
-**rankpruning** requires sklearn. For conda users, the only dependency is
-
-```
-$ conda install scikit-learn
-```
-
-For pip users:
-
-```
-$ pip install numpy
-$ pip install -U scikit-learn
-```
+**rankpruning** requires sklearn and numpy. Installation with `python setup.py` installs them for you. 
 
 Since Rank Pruning works for any probabilistic classifer, we provide a CNN (convolutional neural network). Using this classifier requires two additional dependencies. 
 
