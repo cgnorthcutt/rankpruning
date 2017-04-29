@@ -173,3 +173,7 @@ for key in models.keys():
     "F1:", prfs(y_test, pred)[2]
   )
 ```
+
+### More examples
+
+For more examples, see the tutorial_and_testing module.
