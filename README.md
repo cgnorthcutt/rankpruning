@@ -34,19 +34,21 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 
 ### Installation
 
-To use the **rankpruning** package, simply:
+To use the **rankpruning** package, clone the repo and run:
 
 ```
-$ python setup.py install --user
+$ cd rankpruning
+$ pip install .
 ```
 
-or if you have issues or intend to modify the files, try:
+or if you plan to change any files, clone and run in developer mode:
 
 ```
-$ python setup.py develop --user
+$ cd rankpruning
+$ pip install -e .
 ```
 
-then you can
+then in python, you can:
 
 ```
 import rankpruning
