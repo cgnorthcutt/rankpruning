@@ -76,7 +76,7 @@ With pip, first follow the instructions for installing tensorflow [here](https:/
 sudo pip install keras
 ```
 
-We also provided a basic tutorial to test out Rank Pruning. The tutorial and testing examples also depend on the following four packages:
+We also provide a basic tutorial to test out Rank Pruning. The tutorial and testing examples also depend on the following four packages:
 - scipy
 - pandas
 - matplotlib
