@@ -34,7 +34,7 @@ Ideally, given training feature matrix **X** and noisy labels **s** (instead of 
 
 ### Installation
 
-To use the rankpruning package, simply:
+To use the **rankpruning** package, simply:
 
 ```
 $ python setup.py
