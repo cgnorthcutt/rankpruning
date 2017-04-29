@@ -59,7 +59,7 @@ If you wish to use the tutorial_and_testing package, a few additional dependenci
 
 #### Dependencies
 
-**rankpruning** requires sklearn and numpy. Installation with `python setup.py` installs them for you. 
+**rankpruning** requires sklearn and numpy. We've taken care of these for you. 
 
 Since Rank Pruning works for any probabilistic classifer, we provide a CNN (convolutional neural network). Using this classifier requires two additional dependencies. 
 
