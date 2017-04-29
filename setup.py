@@ -15,6 +15,9 @@ setup(
     long_description=long_description,
     description = 'An algorithm for binary classification with mislabeled training data.',
     url = 'https://github.com/cgnorthcutt/rankpruning',
+
+    # Tailin Wu (tailin@mit.edu) was invaluable for testing and added 
+    # the cnn_classifier.py which was modififed from keras.
     author = 'Curtis G. Northcutt',
     author_email = 'cgn@mit.edu',
 
