@@ -18,7 +18,7 @@ pred = rp.predict(X)
 ``` 
 
 It is trained with:
-1. a feature matrix **X**
+1. a feature matrix **X**, with each row in **X** representing a single training example and each column representing a single feature.
 2. a vector **s** of binary (0 or 1) labels where an unknown fraction of labels may be mislabeled (flipped)
 3. ANY probabilistic classifier **clf** as long as it has `clf.predict_proba()`, `clf.predict()`, and `clf.fit()` defined. 
 
