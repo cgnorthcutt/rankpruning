@@ -16,6 +16,9 @@ def make_sure_path_exists(path):
   
   http://stackoverflow.com/questions/273192/how-to-check-if-a-directory-exists-and-create-it-if-necessary
   '''
+
+  import errno
+    
   try:
     os.makedirs(path)
   except OSError as exception:
