@@ -81,8 +81,7 @@ With pip, first follow the instructions for installing tensorflow [here](https:/
 $ sudo pip install keras
 ```
 
-We also provide a basic tutorial to test out Rank Pruning. The tutorial and testing examples also depend on the following four packages:
-- scipy
+We also provide a basic tutorial to test out Rank Pruning. The tutorial and testing examples also depend on the following additional packages:
 - pandas
 - matplotlib
 - jupyter
@@ -96,15 +95,15 @@ from rankpruning import RankPruning, other_pnlearning_methods
 import numpy as np
 
 # Libraries uses only for the purpose of this example
-from scipy.stats import multivariate_normal
+from numpy.random import multivariate_normal
 from sklearn.metrics import precision_recall_fscore_support as prfs
 from sklearn.metrics import accuracy_score as acc
 from sklearn.linear_model import LogisticRegression
 
 # Create the training dataset with positive and negative examples
 # drawn from two-dimensional Guassian distributions.
-neg = multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=1000)
-pos = multivariate_normal.rvs(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=500)
+neg = multivariate_normal(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=1000)
+pos = multivariate_normal(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=500)
 X = np.concatenate((neg, pos))
 y = np.concatenate((np.zeros(len(neg)), np.ones(len(pos))))
 
@@ -118,8 +117,8 @@ s_only_neg_mislabeled = 1 - (1 - y) * (np.cumsum(1 - y) <= (1 - frac_neg2pos) * 
 s[y==0] = s_only_neg_mislabeled[y==0]
 
 # Create testing dataset:
-neg_test = multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=2000)
-pos_test = multivariate_normal.rvs(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=1000)
+neg_test = multivariate_normal(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=2000)
+pos_test = multivariate_normal(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=1000)
 X_test = np.concatenate((neg_test, pos_test))
 y_test = np.concatenate((np.zeros(len(neg_test)), np.ones(len(pos_test))))
 
