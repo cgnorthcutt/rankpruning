@@ -6,27 +6,27 @@
 from __future__ import print_function
 
 
-# In[ ]:
+# In[2]:
 
 from rankpruning import RankPruning, other_pnlearning_methods
 import numpy as np
 
 # Libraries uses only for the purpose of the tutorial
-from scipy.stats import multivariate_normal
+from numpy.random import multivariate_normal
 from sklearn.metrics import precision_recall_fscore_support as prfs
 from sklearn.metrics import accuracy_score as acc
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
 
-# In[2]:
+# In[3]:
 
 # Create our training dataset having examples drawn from two 2-dimensional Guassian distributions.
 # A Pandas DataFrame is used only for the purposes of demonstration. Numpy arrays are preferred.
 # In this example, we allow for class imbalance (twice as many negative examples).
-neg = pd.DataFrame(multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=1000), columns = ['x1', 'x2'])
+neg = pd.DataFrame(multivariate_normal(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=1000), columns = ['x1', 'x2'])
 neg['label'] = [0 for i in range(len(neg))]
-pos = pd.DataFrame(multivariate_normal.rvs(mean=[5,5], cov=[[1.5,0.3],[1.3,4]], size=500), columns = ['x1', 'x2'])
+pos = pd.DataFrame(multivariate_normal(mean=[5,5], cov=[[1.5,0.3],[1.3,4]], size=500), columns = ['x1', 'x2'])
 pos['label'] = [1 for i in range(len(pos))]
 
 try:
@@ -44,7 +44,7 @@ except:
 # 
 # ### Feel free to adjust these noise rates. But remember --> frac_neg2pos + frac_neg2pos < 1, i.e. $\rho_1 + \rho_0 < 1$
 
-# In[34]:
+# In[4]:
 
 # Choose mislabeling noise rates.
 frac_pos2neg = 0.8 # rh1, P(s=0|y=1) in literature
@@ -63,16 +63,16 @@ s_only_neg_mislabeled = 1 - (1 - y) * (np.cumsum(1 - y) <= (1 - frac_neg2pos) * 
 s[y==0] = s_only_neg_mislabeled[y==0]
 
 
-# In[35]:
+# In[4]:
 
 # Create testing dataset
-neg_test = multivariate_normal.rvs(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=2000)
-pos_test = multivariate_normal.rvs(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=1000)
+neg_test = multivariate_normal(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=2000)
+pos_test = multivariate_normal(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=1000)
 X_test = np.concatenate((neg_test, pos_test))
 y_test = np.concatenate((np.zeros(len(neg_test)), np.ones(len(pos_test))))
 
 
-# In[36]:
+# In[6]:
 
 # Create and fit Rank Pruning object using any clf 
 # of your choice as long as it has predict_proba() defined
@@ -81,7 +81,7 @@ rp = RankPruning(clf = LogisticRegression())
 rp.fit(X, s)
 
 
-# In[37]:
+# In[8]:
 
 actual_py1 = sum(y) / float(len(y))
 actual_ps1 = sum(s) / float(len(s))
@@ -89,7 +89,7 @@ actual_pi1 = frac_neg2pos * (1 - actual_py1) / float(actual_ps1)
 actual_pi0 = frac_pos2neg * actual_py1 / (1 - actual_ps1)
 
 
-# In[38]:
+# In[9]:
 
 print("What are rho1, rho0, pi1, and pi0?")
 print("----------------------------------")
@@ -107,6 +107,9 @@ print("Estimated rho0, P(s = 1 | y = 0):", round(rp.rh0, 2), "\t| Actual:", roun
 print("Estimated pi1, P(y = 0 | s = 1):", round(rp.pi1, 2), "\t| Actual:", round(actual_pi1, 2))
 print("Estimated pi0, P(y = 1 | s = 0):", round(rp.pi0, 2), "\t| Actual:", round(actual_pi0, 2))
 print("Estimated py1, P(y = 1):", round(rp.py1, 2), "\t\t| Actual:", round(actual_py1, 2))
+
+print("Actual k1:", actual_pi1 * sum(s))
+print("Acutal k0:", actual_pi0 * (len(s) - sum(s)))
 
 
 # ## Comparing models using a logistic regression classifier.
@@ -152,8 +155,8 @@ num_features = 100
 # Create training dataset - this synthetic dataset is not necessarily  
 # appropriate for the CNN. This is for demonstrative purposes. 
 # A fully connected regular neural network is more appropriate.
-neg = multivariate_normal.rvs(mean=[0]*num_features, size=5000)
-pos = multivariate_normal.rvs(mean=[0.5]*num_features, size=4000)
+neg = multivariate_normal(mean=[0]*num_features, size=5000)
+pos = multivariate_normal(mean=[0.5]*num_features, size=4000)
 X = np.concatenate((neg, pos))
 y = np.concatenate((np.zeros(len(neg)), np.ones(len(pos))))
 # Again, s is the noisy labels, we flip y randomly using noise rates.
@@ -162,8 +165,8 @@ s_only_neg_mislabeled = 1 - (1 - y) * (np.cumsum(1 - y) <= (1 - frac_neg2pos) * 
 s[y==0] = s_only_neg_mislabeled[y==0]
 
 # Create testing dataset
-neg_test = multivariate_normal.rvs(mean=[0]*num_features, size=1000)
-pos_test = multivariate_normal.rvs(mean=[0.4]*num_features, size=800)
+neg_test = multivariate_normal(mean=[0]*num_features, size=1000)
+pos_test = multivariate_normal(mean=[0.4]*num_features, size=800)
 X_test = np.concatenate((neg_test, pos_test))
 y_test = np.concatenate((np.zeros(len(neg_test)), np.ones(len(pos_test))))
 
