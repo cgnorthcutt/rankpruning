@@ -42,9 +42,9 @@ def prepare_dataset_for_NN(dataset, img_shape, img_channels):
 def cons_CNN_MNIST(num_category = 2, nb_filters = 32, kernel_size = (3,3), input_shape = (28, 28, 1), pool_size = (2,2), activation = "relu"):
     model = Sequential()
 
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1], border_mode='valid', input_shape = input_shape))
+    model.add(Convolution2D(nb_filters, kernel_size, padding='valid', input_shape = input_shape))
     model.add(Activation(activation))
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
+    model.add(Convolution2D(nb_filters, kernel_size))
     model.add(Activation(activation))
     model.add(MaxPooling2D(pool_size=pool_size))
     model.add(Dropout(0.25))
@@ -65,16 +65,16 @@ def cons_CNN_MNIST(num_category = 2, nb_filters = 32, kernel_size = (3,3), input
 def cons_CNN_CIFAR(num_category = 2, nb_filters = 32, kernel_size = (3,3), input_shape = (32, 32, 3), pool_size = (2,2), activation = "relu"):
     model = Sequential()
 
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1], border_mode='same', input_shape = input_shape))
+    model.add(Convolution2D(nb_filters, kernel_size, padding='same', input_shape = input_shape))
     model.add(Activation(activation))
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
+    model.add(Convolution2D(nb_filters, kernel_size))
     model.add(Activation(activation))
     model.add(MaxPooling2D(pool_size=pool_size))
     model.add(Dropout(0.25))
 
-    model.add(Convolution2D(64, kernel_size[0], kernel_size[1], border_mode='same'))
+    model.add(Convolution2D(64, kernel_size, padding='same'))
     model.add(Activation(activation))
-    model.add(Convolution2D(64, kernel_size[0], kernel_size[1]))
+    model.add(Convolution2D(64, kernel_size))
     model.add(Activation(activation))
     model.add(MaxPooling2D(pool_size=pool_size))
     model.add(Dropout(0.25))
@@ -213,7 +213,8 @@ class CNN(object):
 
         X_train, s_train = prepare_dataset_for_NN((X_train, s_train), self.img_shape, self.img_channels)
             
-        self.clf.fit(X_train, s_train, sample_weight = sample_weight_train, batch_size = self.batch_size, nb_epoch = self.epochs, validation_data = validation_data_for_NN, callbacks = callbacks, shuffle = True, verbose = verbose)
+        self.clf.fit(X_train, s_train, sample_weight = sample_weight_train, batch_size = self.batch_size, epochs
+                     = self.epochs, validation_data = validation_data_for_NN, callbacks = callbacks, shuffle = True, verbose = verbose)
         
         return self
 
