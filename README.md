@@ -9,7 +9,7 @@
 
 A tutorial is provided in the tutorial/tutorial.ipynb file. An ipynb (Jupyter Notebook) is used to allow you to view the tutorial output without installing tutorial-specific dependiences. We provide both Jupyter Notebook and python implementations of most files for portability and ease of use.
 
-### Classification with Rank Pruning is easy
+### Classification with Rank Pruning is easy.
 
 ```python
 rp = RankPruning(clf=logreg()) # or a CNN(), or NaiveBayes(), etc.
@@ -47,7 +47,7 @@ $ cd rankpruning
 $ pip install -e .
 ```
 
-then in python, you can:
+#### Python Usage
 
 ```python
 import rankpruning
@@ -72,13 +72,13 @@ To use our CNN with conda:
 ```
 # Linux/Mac OS X, Python 2.7/3.4/3.5, CPU only:
 $ conda install -c conda-forge tensorflow
-$ conda install keras
+$ conda install keras>=2.0.0 # Requires version 2.0.0 or greater
 ```
 
-With pip, first follow the instructions for installing tensorflow [here](https://www.tensorflow.org/versions/r0.10/get_started/os_setup#pip_installation), then install keras using: 
+With pip, first follow the instructions for installing tensorflow [here](https://www.tensorflow.org/versions/r0.10/get_started/os_setup#pip_installation), then install keras 2.0.0 using: 
 
 ```
-$ sudo pip install keras
+$ sudo pip install keras>=2.0.0 # Requires version 2.0.0 or greater
 ```
 
 We also provide a basic tutorial to test out Rank Pruning. The tutorial and testing examples also depend on the following additional packages:
