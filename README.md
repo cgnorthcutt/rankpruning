@@ -122,7 +122,7 @@ pos_test = multivariate_normal(mean=[5,5], cov=[[1.5,1.3],[1.3,4]], size=1000)
 X_test = np.concatenate((neg_test, pos_test))
 y_test = np.concatenate((np.zeros(len(neg_test)), np.ones(len(pos_test))))
 
-# We choose logistic regression, but rank pruning can use 
+# We choose logistic regression, but Rank Pruning can use 
 # any probabilistic classifier such as CNN(), or NaiveBayes(), etc.
 clf = LogisticRegression()
 
