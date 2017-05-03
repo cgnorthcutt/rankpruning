@@ -12,6 +12,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name='rankpruning',
     version='1.1.0',
+    license='MIT',
     long_description=long_description,
     description = 'An algorithm for binary classification with mislabeled training data.',
     url = 'https://github.com/cgnorthcutt/rankpruning',
@@ -52,5 +53,5 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy', 'scikit-learn'],
+    install_requires=['numpy>=1.11.3', 'scikit-learn>=0.18'],
 )
