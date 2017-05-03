@@ -9,9 +9,12 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+# Get version number
+exec(open('rankpruning/version.py').read())
+
 setup(
     name='rankpruning',
-    version='1.0.0',
+    version=__version__,
     license='MIT',
     long_description=long_description,
     description = 'An algorithm for binary classification with mislabeled training data.',
