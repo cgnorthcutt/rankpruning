@@ -63,7 +63,7 @@ s_only_neg_mislabeled = 1 - (1 - y) * (np.cumsum(1 - y) <= (1 - frac_neg2pos) * 
 s[y==0] = s_only_neg_mislabeled[y==0]
 
 
-# In[4]:
+# In[5]:
 
 # Create testing dataset
 neg_test = multivariate_normal(mean=[2,2], cov=[[10,-1.5],[-1.5,5]], size=2000)
@@ -81,7 +81,7 @@ rp = RankPruning(clf = LogisticRegression())
 rp.fit(X, s)
 
 
-# In[8]:
+# In[7]:
 
 actual_py1 = sum(y) / float(len(y))
 actual_ps1 = sum(s) / float(len(s))
@@ -89,7 +89,7 @@ actual_pi1 = frac_neg2pos * (1 - actual_py1) / float(actual_ps1)
 actual_pi0 = frac_pos2neg * actual_py1 / (1 - actual_ps1)
 
 
-# In[9]:
+# In[8]:
 
 print("What are rho1, rho0, pi1, and pi0?")
 print("----------------------------------")
@@ -108,13 +108,13 @@ print("Estimated pi1, P(y = 0 | s = 1):", round(rp.pi1, 2), "\t| Actual:", round
 print("Estimated pi0, P(y = 1 | s = 0):", round(rp.pi0, 2), "\t| Actual:", round(actual_pi0, 2))
 print("Estimated py1, P(y = 1):", round(rp.py1, 2), "\t\t| Actual:", round(actual_py1, 2))
 
-print("Actual k1:", actual_pi1 * sum(s))
-print("Acutal k0:", actual_pi0 * (len(s) - sum(s)))
+print("Actual k1 (Number of items to remove from P̃):", actual_pi1 * sum(s))
+print("Acutal k0 (Number of items to remove from Ñ):", actual_pi0 * (len(s) - sum(s)))
 
 
 # ## Comparing models using a logistic regression classifier.
 
-# In[39]:
+# In[9]:
 
 # For shorter notation use rh1 and rh0 for noise rates.
 
@@ -144,19 +144,23 @@ for key in models.keys():
   print("F1 score:", prfs(y_test, pred)[2])
 
 
+# ### In the above example, you see that for very simple 2D Gaussians, Rank Pruning performs similarly to Nat13. 
+# ### Now let's look at a slightly more realistic scenario with 100-Dimensional data and a more complex classifier.
+# ### Below you see that Rank Pruning greatly outperforms other models.
+
 # ## Comparing models using a CNN classifier.
 # ### Note, this particular CNN's architecture is for MNIST / CIFAR image detection and may not be appropriate for this synthetic dataset. A simple, fully connected regular deep neural network is likely suitable. We only use it here for the purpose of showing that Rank Pruning works for any probabilistic classifier, as long as it has clf.predict(), clf.predict_proba(), and clf.fit() defined.
 # ### This section requires keras and tensorflow packages installed. See git repo for instructions in README.
 
-# In[89]:
+# In[10]:
 
 num_features = 100
 
 # Create training dataset - this synthetic dataset is not necessarily  
 # appropriate for the CNN. This is for demonstrative purposes. 
 # A fully connected regular neural network is more appropriate.
-neg = multivariate_normal(mean=[0]*num_features, size=5000)
-pos = multivariate_normal(mean=[0.5]*num_features, size=4000)
+neg = multivariate_normal(mean=[0]*num_features, cov=np.eye(num_features), size=5000)
+pos = multivariate_normal(mean=[0.5]*num_features, cov=np.eye(num_features), size=4000)
 X = np.concatenate((neg, pos))
 y = np.concatenate((np.zeros(len(neg)), np.ones(len(pos))))
 # Again, s is the noisy labels, we flip y randomly using noise rates.
@@ -165,13 +169,13 @@ s_only_neg_mislabeled = 1 - (1 - y) * (np.cumsum(1 - y) <= (1 - frac_neg2pos) * 
 s[y==0] = s_only_neg_mislabeled[y==0]
 
 # Create testing dataset
-neg_test = multivariate_normal(mean=[0]*num_features, size=1000)
-pos_test = multivariate_normal(mean=[0.4]*num_features, size=800)
+neg_test = multivariate_normal(mean=[0]*num_features, cov=np.eye(num_features), size=1000)
+pos_test = multivariate_normal(mean=[0.4]*num_features, cov=np.eye(num_features), size=800)
 X_test = np.concatenate((neg_test, pos_test))
 y_test = np.concatenate((np.zeros(len(neg_test)), np.ones(len(pos_test))))
 
 
-# In[90]:
+# In[11]:
 
 from classifier_cnn import CNN
 clf = CNN(img_shape = (num_features/10, num_features/10), epochs = 1)
