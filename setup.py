@@ -11,7 +11,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='rankpruning',
-    version='1.1.0',
+    version='1.0.0',
     license='MIT',
     long_description=long_description,
     description = 'An algorithm for binary classification with mislabeled training data.',
