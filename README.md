@@ -9,6 +9,19 @@
 
 A tutorial is provided at [tutorial/tutorial.ipynb](https://github.com/cgnorthcutt/rankpruning/blob/master/tutorial_and_testing/tutorial.ipynb). An ipynb (Jupyter Notebook) is used to allow you to view the tutorial output without installing tutorial-specific dependiences. We provide both Jupyter Notebook and python implementations of most files for portability and ease of use.
 
+### Citation
+
+If you find this repository helpful, please cite us: [https://arxiv.org/abs/1705.01936](https://arxiv.org/abs/1705.01936)
+
+```
+@article{northcutt2017rankpruning,
+    title={Learning with Confident Examples: Rank Pruning for Robust Classification with Noisy Labels},
+    author={Northcutt, Curtis G and Wu, Tailin and Chuang, Isaac L},
+    journal={arXiv preprint arXiv:1705.01936},
+    year={2017}
+}
+```
+
 ### Classification with Rank Pruning is easy.
 
 ```python
