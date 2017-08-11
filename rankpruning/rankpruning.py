@@ -416,6 +416,16 @@ class RankPruning(object):
     self.rh0 = frac_neg2pos
     self.clf = logreg() if clf is None else clf
   
+    required_methods = ['fit', 'predict_proba']
+    
+    missing_methods = []
+
+    for method in required_methods:
+        if not hasattr(self.clf, method):
+            missing_methods.append(method)
+    
+    if len(missing_methods)>0:
+        raise TypeError('"{}" is/are not in clf.'.format(','.join(missing_methods)))
   
   def get_fraction_of_positives_mislabeled_as_negative(self):
     '''Accessor method for inverse positive noise rate.'''
