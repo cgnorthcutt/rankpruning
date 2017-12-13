@@ -24,7 +24,6 @@ If you find this repository helpful, please cite us: [http://auai.org/uai2017/pr
  numpages = {10},
  url = {http://auai.org/uai2017/proceedings/papers/35.pdf},
  publisher = {AUAI Press},
- address = {Arlington, Virginia, United States},
 } 
 ```
 
