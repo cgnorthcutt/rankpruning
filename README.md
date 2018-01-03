@@ -1,6 +1,6 @@
 # rankpruning
 
-**rankpruning** is a python package for state-of-the-art binary classification with **partially mislabeled training examples**. This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification where some fraction of positive example labels are uniformly randomly flipped and some fraction of negative example labels are uniformly randomly flipped). Rank Pruning is theoretically grounded and trivial to use. The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) is under review at UAI 2017 as a submitted conference publication. A version of the [paper](https://arxiv.org/abs/1705.01936) is available on arXiv at this link: https://arxiv.org/abs/1705.01936. The `RankPruning()` class:
+**rankpruning** is a python package for state-of-the-art binary classification with **mislabeled training examples**. This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification where some fraction of positive example labels are uniformly randomly flipped and some fraction of negative example labels are uniformly randomly flipped). Rank Pruning is theoretically grounded and trivial to use. The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) was published in the proceedings of Uncertainty in Artificial Intelligence (UAI) 2017. You can view the publication [here](http://auai.org/uai2017/proceedings/papers/35.pdf). The `RankPruning()` class:
 - works with any probabilistic classifer (e.g. neural network, logistic regression)
 - is fast (time-efficient), taking about 2-3 times the training time of the classifier)
 - also computes the fraction of noise in the positive and negative sets
@@ -8,6 +8,24 @@
 - also works well when noise examples drawn from a third distribution are mixed into the training data.
 
 A tutorial is provided at [tutorial/tutorial.ipynb](https://github.com/cgnorthcutt/rankpruning/blob/master/tutorial_and_testing/tutorial.ipynb). An ipynb (Jupyter Notebook) is used to allow you to view the tutorial output without installing tutorial-specific dependiences. We provide both Jupyter Notebook and python implementations of most files for portability and ease of use.
+
+### Citation
+
+If you find this repository helpful, please cite us: [http://auai.org/uai2017/proceedings/papers/35.pdf](http://auai.org/uai2017/proceedings/papers/35.pdf)
+
+```
+@inproceedings{northcutt2017rankpruning,
+ author={Northcutt, Curtis G. and Wu, Tailin and Chuang, Isaac L.},
+ title={Learning with Confident Examples: Rank Pruning for Robust Classification with Noisy Labels},
+ booktitle = {Proceedings of the Thirty-Third Conference on Uncertainty in Artificial Intelligence},
+ series = {UAI'17},
+ year = {2017},
+ location = {Sydney, Australia},
+ numpages = {10},
+ url = {http://auai.org/uai2017/proceedings/papers/35.pdf},
+ publisher = {AUAI Press},
+} 
+```
 
 ### Classification with Rank Pruning is easy.
 
