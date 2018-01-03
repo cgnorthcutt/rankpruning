@@ -3,6 +3,7 @@
 
 # In[ ]:
 
+
 from __future__ import print_function
 
 from sklearn.linear_model import LogisticRegression as logreg
@@ -12,6 +13,13 @@ import math
 
 
 # In[ ]:
+
+
+MIN_NUM_PER_CLASS = 10
+
+
+# In[ ]:
+
 
 # Relevant helper functions exposed to rankpruning module. 
 
@@ -120,6 +128,10 @@ def compute_conf_counts_noise_rates_from_probabilities(
   # Confident Counts Estimator for p(s=1|y=0) ~ |s=1 and y=0| / |y=0|
   # Allow np.NaN when float(N_least_positive_size + P_least_positive_size) == 0
   rh0_conf = P_least_positive_size / float(N_least_positive_size + P_least_positive_size)
+  
+  # Ensure that rh1, rh0 are in proper range [0,1)
+  rh0_conf = min(max(rh0_conf, 0.0), 0.9999)
+  rh1_conf = min(max(rh1_conf, 0.0), 0.9999)
 
   if verbose:
     print("Est count of s = 1 and y = 1:", P_most_positive_size)
@@ -335,7 +347,141 @@ def compute_conf_counts_noise_rates(
   )[:-1]
 
 
+def compute_ps1_py1_pi1_pi0(s, rh1, rh0):
+  '''Compute ps1 := P(s=1), py1 := P(y=1), and inverse noise rates pi1, pi0.
+
+  Parameters
+  ----------
+
+  s : np.array
+    A binary vector of labels, s, which may contain mislabeling
+    
+  rh1 : float 
+    P(s=0|y=1). Fraction of positive examples mislabeled as negative examples. 
+    rh1 = frac_pos2neg.
+    
+  rh0 : float
+    P(s=1|y=0). Fraction of negative examples mislabeled as positive examples. 
+    rh0 = frac_neg2pos.
+  '''
+  
+  # Compute ps1 := P(s=1), py1 := P(y=1), and inverse noise rates pi1, pi0
+  ps1 = sum(s) / float(len(s))
+  py1 = (ps1 - rh0) / float(1 - rh1 - rh0)
+  pi1 = rh0 * (1 - py1) / float(ps1)
+  pi0 = (rh1 * py1) / float(1 - ps1)
+    
+#     # Equivalently, we can compute pi1, pi0, and py1 this way as well, but there is no need:
+#     pi1 = rh0 * (1 - ps1 - rh1) / float(ps1) / float(1 - rh1 - rh0)
+#     pi0 = rh1 * (ps1 - rh0) / float(1 - ps1) / float(1 - rh1 - rh0)
+#     py1 = ps1 * (1 - pi1) + pi0 * (1 - ps1)
+    
+  # Ensure that pi1, and pi0 are in proper range [0,1)
+  pi1 = min(max(pi1, 0.0), 0.9999)
+  pi0 = min(max(pi0, 0.0), 0.9999)
+  
+  return ps1, py1, pi1, pi0
+    
+
+def get_noise_indices(
+  s, 
+  prob_s_eq_1, 
+  frac_of_noise = 1.0,
+  pi1 = None,
+  pi0 = None,
+  num_to_remove_per_class = None,
+  verbose = False,
+):
+  '''Returns the indices of most likely (confident) label errors in s. The
+  number of indices returned is specified by frac_of_noise. When 
+  frac_of_noise = 1.0, all "confidently" estimated noise indices are returned.
+
+  Parameters
+  ----------
+
+  s : np.array
+    A binary vector of labels, s, which may contain mislabeling
+
+  prob_s_eq_1 : iterable (list or np.array)
+    The probability, for each example, whether it is s==1 P(s==1|x). 
+    If you are not sure, leave prob_s_eq_q = None (default) and
+    it will be computed for you using cross-validation.
+
+  frac_of_noise : float
+    When frac_of_noise = 1.0, return all "confidently" estimated noise indices.
+    Value in range (0, 1] that determines the fraction of noisy example 
+    indices to return based on the following formula for example class k.
+    frac_of_noise * number_of_mislabeled_examples_in_class_k, or equivalently    
+    frac_of_noise * inverse_noise_rate_class_k * num_examples_with_s_equal_k
+
+  pi1 : float 
+    P(y=0|s=1) Fraction of observed positive examples that are mislabeled. If None,
+    pi1 will be computed from prob_s_eq_1 and s.
+
+  pi0 : float
+    P(y=1|s=0). Fraction of observed negative examples that are mislabeled. If None,
+    pi0 will be computed from prob_s_eq_1 and s.
+    
+  num_to_remove_per_class : list of int of length K (# of classes)
+    e.g. num_to_remove_per_class = [5, 10] would return the indices of the 5 most
+    likely mislabeled examples in class s = 0, and the 10 most likely mislabeled 
+    examples in class s = 1. List must be integers and be of length K (the number
+    of classes).
+
+  class_label : int (non-negative)
+    If set to 0 or 1, only return noise indicies for that class_label. By
+    default this is set to None, which returns a list of indices of noise
+    for each class.
+
+  verbose : bool
+    Set to true if you wish to print additional information while running.
+  '''
+  
+  size_P_noisy = sum(s == 1)
+  size_N_noisy = sum(s == 0)
+  
+  if pi1 is None or pi0 is None:
+    rh1, rh0 = compute_conf_counts_noise_rates_from_probabilities(s, prob_s_eq_1)
+    _, _, pi1, pi0 = compute_ps1_py1_pi1_pi0(s, rh1, rh0)
+  
+  if num_to_remove_per_class is None:
+    # Estimate k0 and k1 (number of non-confident examples to prune)
+    # When frac_of_noise = 1, k1 and k0 are the number of expected mislabeling errors.
+    k1 = size_P_noisy * pi1 * frac_of_noise
+    k0 = size_N_noisy * pi0 * frac_of_noise
+  else:
+    k1 = num_to_remove_per_class[1]
+    k0 = num_to_remove_per_class[0]
+  
+  # The number of examples to prune in P and N. Leave at least 10 examples.
+  k1 = max(min(int(k1), size_P_noisy - MIN_NUM_PER_CLASS), 0)
+  k0 = max(min(int(k0), size_N_noisy - MIN_NUM_PER_CLASS), 0)
+  
+  if verbose:
+    print('k1: ', k1, ', k0: ', k0)
+
+  # Peform Pruning with threshold probabilities from BFPRT algorithm in O(n)
+  # Don't prune if pi1 = 0 or there are not MIN_NUM_PER_CLASS in P_noisy
+  if (pi1 > 0 and size_P_noisy > MIN_NUM_PER_CLASS) or num_to_remove_per_class is not None:
+    kth_smallest = np.partition(prob_s_eq_1[s == 1], k1)[k1]
+  else:
+    kth_smallest = -1.0
+  # Don't prune if pi0 = 0 or there are not MIN_NUM_PER_CLASS in N_noisy
+  if (pi0 > 0 and size_N_noisy > MIN_NUM_PER_CLASS) or num_to_remove_per_class is not None:
+    kth_largest = -np.partition(-prob_s_eq_1[s == 0], k0)[k0] 
+  else:
+    kth_largest = 2.0 
+  
+  if verbose:
+    print('kth_smallest: ', kth_smallest, ', kth_largest: ', kth_largest)
+
+  noise_mask = ((prob_s_eq_1 > kth_largest) & (s == 0)) | ((prob_s_eq_1 < kth_smallest) & (s == 1))
+  
+  return noise_mask  
+
+
 # In[ ]:
+
 
 def _mean_without_nan_inf(arr, replacement = None):
   '''Private helper method for computing the mean
@@ -366,7 +512,6 @@ def _mean_without_nan_inf(arr, replacement = None):
 
 # In[ ]:
 
-MIN_NUM_PER_CLASS = 10
 
 class RankPruning(object):
   '''
@@ -523,43 +668,15 @@ class RankPruning(object):
     self.rh1 = self.rh1 if self.rh1 is not None else rh1
     self.rh0 = self.rh0 if self.rh0 is not None else rh0
     
+    # Set rh0 if we are in the pulearning setting
+    self.rh0 = 0.0 if pulearning else self.rh0
+    
     # Compute ps1 := P(s=1), py1 := P(y=1), and inverse noise rates pi1, pi0
-    self.ps1 = sum(s) / float(len(s))
-    self.py1 = (self.ps1 - self.rh0) / float(1 - self.rh1 - self.rh0)
-    self.pi1 = self.rh0 * (1 - self.py1) / float(self.ps1)
-    self.pi0 = (self.rh1 * self.py1) / float(1 - self.ps1)
-    
-#     # Equivalently, we can compute pi1, pi0, and py1 this way as well, but there is no need:
-#     self.pi1 = self.rh0 * (1 - self.ps1 - self.rh1) / float(self.ps1) / float(1 - self.rh1 - self.rh0)
-#     self.pi0 = self.rh1 * (self.ps1 - self.rh0) / float(1 - self.ps1) / float(1 - self.rh1 - self.rh0)
-#     self.py1 = self.ps1 * (1 - self.pi1) + self.pi0 * (1 - self.ps1)
-    
-    # Ensure that rh1, rh0, pi1, and pi0 are in proper range [0,1)
-    self.rh0 = 0.0 if pulearning else min(max(self.rh0, 0.0), 0.9999)
-    self.rh1 = min(max(self.rh1, 0.0), 0.9999)
-    self.pi0 = min(max(self.pi0, 0.0), 0.9999)
-    self.pi1 = min(max(self.pi1, 0.0), 0.9999)
-
-    # Estimate k0 and k1 (number of non-confident examples to prune)
-    size_P_noisy = sum(s == 1)
-    size_N_noisy = sum(s == 0)
-    # The number of examples to prune in P and N. Leave at least 10 examples. 
-    k1 = max(min(int(size_P_noisy * self.pi1), size_P_noisy - MIN_NUM_PER_CLASS), 0)
-    k0 = max(min(int(size_N_noisy * self.pi0), size_N_noisy - MIN_NUM_PER_CLASS), 0)
-    
-    # Peform Pruning with threshold probabilities from BFPRT algorithm in O(n)
-    # Don't prune if pi1 = 0 or there are not MIN_NUM_PER_CLASS in P_noisy
-    if self.pi1 > 0 and size_P_noisy > MIN_NUM_PER_CLASS:
-      kth_smallest = np.partition(prob_s_eq_1[s == 1], k1)[k1]
-    else:
-      kth_smallest = -1.0
-    # Don't prune if pi0 = 0 or there are not MIN_NUM_PER_CLASS in N_noisy
-    if self.pi0 > 0 and size_N_noisy > MIN_NUM_PER_CLASS:
-      kth_largest = -np.partition(-prob_s_eq_1[s == 0], k0)[k0] 
-    else:
-      kth_largest = 2.0 
+    self.ps1, self.py1, self.pi1, self.pi0 = compute_ps1_py1_pi1_pi0(s, self.rh1, self.rh0)
       
-    prune_mask = ((prob_s_eq_1 > kth_largest) & (s == 0)) | ((prob_s_eq_1 < kth_smallest) & (s == 1))
+    # Get the indices of the examples we wish to prune
+    prune_mask = get_noise_indices(s, prob_s_eq_1, pi1 = self.pi1, pi0 = self.pi0)
+    
     X_mask = ~prune_mask
     X_pruned = X[X_mask]
     s_pruned = s[X_mask]
@@ -585,9 +702,4 @@ class RankPruning(object):
     '''
     
     return self.clf.predict_proba(X)[:,1]
-
-
-# In[ ]:
-
-
 
