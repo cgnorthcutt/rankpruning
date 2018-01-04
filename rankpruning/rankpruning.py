@@ -154,7 +154,7 @@ def compute_noise_rates_and_cv_pred_proba(
   verbose = False,
 ):
   '''This function computes the out-of-sample predicted 
-  probability P(s=1|x) for every example x in X using cross
+  probability P(s=k|x) for every example x in X using cross
   validation while also computing the confident counts noise
   rates within each cross-validated subset and returning
   the average noise rate across all examples. 
@@ -199,16 +199,21 @@ def compute_noise_rates_and_cv_pred_proba(
     verbose : bool
       Set to true if you wish to print additional information while running.
   '''
+  
+  # Number of classes
+  K = len(np.unique(s))
+  # Number of training examples
+  N = len(s)
 
   # Create cross-validation object for out-of-sample predicted probabilities.
   # CV folds preserve the fraction of noisy positive and
   # noisy negative examples in each class.
   kf = StratifiedKFold(n_splits = cv_n_folds, shuffle = True)
 
-  # Intialize result storage and final prob_s_eq_1 array
+  # Intialize result storage and final prob_s array
   rh1_per_cv_fold = []
   rh0_per_cv_fold = []
-  prob_s_eq_1 = np.zeros(np.shape(s))
+  prob_s = np.zeros((N, K))
 
   # Split X and s into "cv_n_folds" stratified folds.
   for k, (cv_train_idx, cv_holdout_idx) in enumerate(kf.split(X, s)):
@@ -218,16 +223,16 @@ def compute_noise_rates_and_cv_pred_proba(
     s_train_cv, s_holdout_cv = s[cv_train_idx], s[cv_holdout_idx]
 
     # Fit the clf classifier to the training set and 
-    # predict on the holdout set and update prob_s_eq_1. 
+    # predict on the holdout set and update prob_s. 
     clf.fit(X_train_cv, s_train_cv)
-    prob_s_eq_1_cv = clf.predict_proba(X_holdout_cv)[:,1] # P(s = 1|x)
-    prob_s_eq_1[cv_holdout_idx] = prob_s_eq_1_cv
+    prob_s_cv = clf.predict_proba(X_holdout_cv) # P(s = k|x) # [:,1]
+    prob_s[cv_holdout_idx] = prob_s_cv
 
     # Compute and append the confident counts noise estimators
     # to estimate the positive and negative mislabeling rates.
     rh1_cv, rh0_cv = compute_conf_counts_noise_rates_from_probabilities(
       s = s_holdout_cv, 
-      prob_s_eq_1 = prob_s_eq_1_cv, 
+      prob_s_eq_1 = prob_s_cv[:,1], # P(s = 1|x) 
       positive_lb_threshold = positive_lb_threshold,
       negative_ub_threshold = negative_ub_threshold,
       verbose = verbose,
@@ -235,32 +240,33 @@ def compute_noise_rates_and_cv_pred_proba(
     rh1_per_cv_fold.append(rh1_cv)
     rh0_per_cv_fold.append(rh0_cv)
 
-  # Return mean rh, omitting nan or inf values, and prob_s_eq_1
+  # Return mean rh, omitting nan or inf values, and prob_s
   return (
     _mean_without_nan_inf(rh1_per_cv_fold), 
     _mean_without_nan_inf(rh0_per_cv_fold), 
-    prob_s_eq_1,
+    prob_s,
   )
 
 
 def compute_cv_predicted_probabilities(
   X, 
-  s, 
+  y, # labels, can be noisy (s) or not noisy (y).
   clf = logreg(),
   cv_n_folds = 3,
   verbose = False,
 ):
   '''This function computes the out-of-sample predicted 
-  probability [P(s=1|x)] for every example in X using cross
-  validation.
+  probability [P(s=k|x)] for every example in X using cross
+  validation. Output is a np.array of shape (N, K) where N is 
+  the number of training examples and K is the number of classes.
 
   Parameters
   ----------
     X : np.array
       Input feature matrix (N, D), 2D numpy array
 
-    s : np.array
-      A binary vector of labels, s, which may contain mislabeling
+    y : np.array
+      A binary vector of labels, y, which may or may not contain mislabeling
 
     clf : sklearn.classifier or equivalent
       Default classifier used is logistic regression. Assumes clf
@@ -276,7 +282,7 @@ def compute_cv_predicted_probabilities(
 
   return compute_noise_rates_and_cv_pred_proba(
     X = X, 
-    s = s, 
+    s = y, 
     clf = clf,
     cv_n_folds = cv_n_folds,
     verbose = verbose,
@@ -646,7 +652,7 @@ class RankPruning(object):
     # positive and negative sets. Also compute P(s=1|x) if needed.
     if prob_s_eq_1 is None or self.rh1 is None or self.rh0 is None:
       if prob_s_eq_1 is None:
-        rh1, rh0, prob_s_eq_1 =         compute_noise_rates_and_cv_pred_proba(
+        rh1, rh0, prob_s =         compute_noise_rates_and_cv_pred_proba(
           X = X, 
           s = s, 
           clf = self.clf,
@@ -655,6 +661,9 @@ class RankPruning(object):
           negative_ub_threshold = negative_ub_threshold,
           verbose = verbose,
         )
+        # Only P(s=1|x) is needed for binary case
+        prob_s_eq_1 = prob_s[:,1]
+        del prob_s
       else:
         rh1, rh0 =         compute_conf_counts_noise_rates_from_probabilities(
           s = s, 
