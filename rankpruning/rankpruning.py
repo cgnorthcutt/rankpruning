@@ -513,7 +513,7 @@ def _mean_without_nan_inf(arr, replacement = None):
   if len(x_real) == 0:
       raise ValueError("All rho_conf estimates are NaN. Check that"         "positive_lb_threshold and negative_ub_threshold values are not"         "too extreme (near 1 or 0), resulting in division by zero.")
   else:
-    return np.mean([x for x in arr if not math.isnan(x) and not math.isinf(x)])
+    return np.mean(x_real)
 
 
 # In[ ]:
