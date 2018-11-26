@@ -1,8 +1,8 @@
-**UPDATE!! This package is now deprecated.** It has been replaced with `confidentlearning`, an all-encompassing Python Package for multiclass learning with noisy labels (PU learning, latent estimation, etc.). It is available here: https://github.com/cgnorthcutt/confidentlearning/
+**UPDATE!! This package is now deprecated.** It has been replaced with `cleanlab`, an all-encompassing Python Package for multiclass learning with noisy labels (PU learning, latent estimation, etc.). It is available here: https://github.com/cgnorthcutt/cleanlab/
 
-# rankpruning was replaced by [confidentlearning](https://github.com/cgnorthcutt/confidentlearning/) in 2018.
-# USE https://github.com/cgnorthcutt/confidentlearning/ with BUG FIXES, SIMPLER CODE, GENERLIZATION to multiclass classification, and integration with SCIKIT-LEARN, PYTORCH, TENSORFLOW, and more!!! 
-# Check out the [classification.py](https://github.com/cgnorthcutt/confidentlearning/blob/master/confidentlearning/classification.py) file for a familiar interface.
+# rankpruning was replaced by [cleanlab](https://github.com/cgnorthcutt/cleanlab/) in 2018.
+# USE https://github.com/cgnorthcutt/cleanlab/ with BUG FIXES, SIMPLER CODE, GENERLIZATION to multiclass classification, and integration with SCIKIT-LEARN, PYTORCH, TENSORFLOW, and more!!! 
+# Check out the [classification.py](https://github.com/cgnorthcutt/cleanlab/blob/master/cleanlab/classification.py) file for a familiar interface.
 
 **rankpruning** is a python package for state-of-the-art binary classification with **mislabeled training examples**. This machine learning package implements the Rank Pruning algorithm and other methods for P̃Ñ learning (binary classification where some fraction of positive example labels are uniformly randomly flipped and some fraction of negative example labels are uniformly randomly flipped). Rank Pruning is theoretically grounded and trivial to use. The Rank Pruning algorithm ([Curtis G. Northcutt](http://www.curtisnorthcutt.com/), [Tailin Wu](http://cuaweb.mit.edu/Pages/Person/Page.aspx?PersonId=26273), & [Isaac L. Chuang](http://feynman.mit.edu/ike/homepage/index.html), 2017) was published in the proceedings of Uncertainty in Artificial Intelligence (UAI) 2017. You can view the publication [here](http://auai.org/uai2017/proceedings/papers/35.pdf). The `RankPruning()` class:
 - works with any probabilistic classifer (e.g. neural network, logistic regression)
